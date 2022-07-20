@@ -2,7 +2,7 @@ import React from 'react';
 import useCalendar from '@store/calendar/useCalendar';
 
 const Calendar = () => {
-  const { currYear, currMonth, currDate } = useCalendar();
+  const { currYear, currMonth } = useCalendar();
   const renderHeader = React.useMemo(() => {
     return (
       <div className="stroke-indigo-500">
