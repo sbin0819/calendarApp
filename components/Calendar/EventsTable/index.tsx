@@ -1,8 +1,53 @@
 import React from 'react';
+import moment from 'moment';
+import SampleModal from '../Modal';
+import useOnClickOutside from 'lib/useOnClickOutside';
 
 const EventsTable = () => {
-  const header = React.useCallback(
-    () => (
+  const currYYMMDD = '2022-01-17';
+  const weekDays = [
+    '2022-01-17',
+    '2022-01-18',
+    '2022-01-19',
+    '2022-01-20',
+    '2022-01-21',
+    '2022-01-22',
+    '2022-01-23',
+  ];
+  const weekDaysWithMarkedEventsData = [
+    { '2022-01-17': [] },
+    { '2022-01-18': [] },
+    { '2022-01-19': [] },
+    { '2022-01-20': [] },
+    { '2022-01-21': [] },
+    { '2022-01-22': [] },
+    { '2022-01-23': [] },
+  ];
+
+  return (
+    <div className="flex-1 min-w-[800px] overflow-x-scroll">
+      <EventWeekHeader />
+      <div className="flex h-[calc(100vh-144px)] overflow-y-scroll">
+        <EventTimeBorder />
+        <div className="flex-1 grid grid-cols-7">
+          {weekDaysWithMarkedEventsData.map((date) =>
+            Object.entries(date).map(([date, markedEvents]) => (
+              <React.Fragment key={date}>
+                <EventVerticalSlot
+                  date={date}
+                  markedEvents={markedEvents}
+                  // onClick={onClickEventSlot}
+                />
+              </React.Fragment>
+            )),
+          )}
+        </div>
+      </div>
+    </div>
+  );
+
+  function EventWeekHeader() {
+    return (
       <div className="flex" role="presentation">
         <div className="flex w-[92px] items-end">GMT+09</div>
         <div
@@ -39,45 +84,8 @@ const EventsTable = () => {
           </div>
         </div>
       </div>
-    ),
-    [],
-  );
-  const currYYMM = '2022-1';
-  const weekDays = ['17', '18', '19', '20', '21', '22', '23'];
-  return (
-    <div className="flex-1 min-w-[800px] overflow-x-scroll">
-      {header()}
-      {/* 40*24 */}
-      <div className="flex h-[calc(100vh-144px)] overflow-y-scroll">
-        <EventTimeBorder />
-        {/* <div className="bg-slate-100 w-[8px]" /> */}
-        <div className="flex-1 grid grid-cols-7">
-          <div className="relative border-r-[1px]">
-            {/* 추가 작업 필요 */}
-            <div
-              className="absolute top-0 bottom-0 left-0 right-0 h-[960px]"
-              data-datekey="2022-01-17"
-              onClick={(e) => {
-                e.stopPropagation();
-                console.log('y', e.clientY);
-                console.log(e.currentTarget.getAttribute('data-datekey'));
-              }}
-            />
-            <div className="realtive"></div>
-            {/* {[...Array(24).keys()].map((_, i) => (
-                <div
-                  className="flex flex-col justify-center h-[40px] border-l-[1px] border-b-[1px] time-slot-group"
-                  key={i}
-                >
-                  <div className="time-slot"></div>
-                  <div className="time-slot"></div>
-                </div>
-              ))} */}
-          </div>
-        </div>
-      </div>
-    </div>
-  );
+    );
+  }
 
   function EventTimeBorder() {
     return (
@@ -105,5 +113,57 @@ const EventsTable = () => {
     );
   }
 };
+
+function EventVerticalSlot({ date, markedEvents }: any) {
+  const [isShowModal, setIsShowModal] = React.useState(false);
+  const [coordinate, setCoordinate] = React.useState({ x: '0', y: '144' });
+  const onOpenModal = () => {
+    setIsShowModal(true);
+  };
+  const onCloseModal = () => {
+    setIsShowModal(false);
+  };
+
+  const onClickEventSlot =
+    (openModalCb: () => void) =>
+    (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+      e.stopPropagation();
+      setCoordinate((prev) => ({
+        ...prev,
+        x: `${e.clientX}`,
+        y: `${e.clientY - 200}`,
+      }));
+      console.log('y', e.clientY);
+      console.log(e.currentTarget.getAttribute('data-datekey'));
+      openModalCb();
+    };
+
+  const onHandleEventSlot = onClickEventSlot(onOpenModal);
+  return (
+    <React.Fragment>
+      <div className="relative border-r-[1px]">
+        {/* 추가 작업 필요 */}
+        <div
+          className="absolute top-0 bottom-0 left-0 right-0 h-[960px]"
+          data-datekey={date}
+          onClick={onHandleEventSlot}
+        />
+        {isShowModal && (
+          <SampleModal coordinate={coordinate} onClose={onCloseModal} />
+        )}
+        <div className="realtive"></div>
+        {/* {[...Array(24).keys()].map((_, i) => (
+        <div
+          className="flex flex-col justify-center h-[40px] border-l-[1px] border-b-[1px] time-slot-group"
+          key={i}
+        >
+          <div className="time-slot"></div>
+          <div className="time-slot"></div>
+        </div>
+      ))} */}
+      </div>
+    </React.Fragment>
+  );
+}
 
 export default EventsTable;
