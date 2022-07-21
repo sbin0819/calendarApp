@@ -89,12 +89,11 @@ const SlotBody = () => {
           <div className="relative border-r-[1px]">
             {/* 추가 작업 필요 */}
             <div
-              className="absolute top-0 bottom-0 left-0 right-0 h-[960px]"
-              data-datekey="2022-01-17"
+              className="absolute top-0 bottom-0 left-0 right-0"
               onClick={(e) => {
                 e.stopPropagation();
-                console.log('y', e.clientY);
-                console.log(e.currentTarget.getAttribute('data-datekey'));
+                console.log('x:', e.clientY);
+                console.log('y:', e.clientY);
               }}
             />
             <div className="realtive"></div>
