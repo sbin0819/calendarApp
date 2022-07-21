@@ -54,10 +54,10 @@ export const calendarSlice = createSlice({
   reducers: {
     selectedDate: (state) => {},
     nextWeek: (state) => {
-      // currDay + 7
+      // 다음주의 날짜들 중 같은 인덱스
     },
     prevWeek: (state) => {
-      // currDay - 7
+      // 이전주의 날짜들 중 같은 인덱스
     },
     nextMonth: (state) => {
       // currMonth + 1
