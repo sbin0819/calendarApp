@@ -131,7 +131,7 @@ function EventVerticalSlot({ date, markedEvents, colIdx }: any) {
   };
 
   const filterCoodinateY = React.useCallback((coordinateY): string => {
-    const rangeY = [...Array(48).keys()].map((_, i) => i * 20 + stepY.current);
+    const rangeY = [...Array(24).keys()].map((_, i) => i * 40 + stepY.current);
     let c = -1;
     while (true) {
       c++;

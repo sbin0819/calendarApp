@@ -16,13 +16,16 @@ const EventSlotModal = ({ colIdx, offset, onClose }: any) => {
           position: 'relative',
           top: offset.y + 'px',
           left: 348 + offset.width * colIdx + 'px',
-          background: 'gold',
+          background: '#a2c2d8',
           width: offset.width + 'px',
           height: '35px',
           zIndex: 10,
+          borderRadius: '4px',
+          boxShadow: '2px 4px #888888',
         }}
       >
-        <div className="text-xs">제목없음</div>
+        <div className="text-[10px] pl-3 pt-[1px]">제목없음</div>
+        <div className="text-[10px] pl-3">1시 ~ 2시</div>
       </div>
       <div
         style={{
@@ -39,7 +42,7 @@ const EventSlotModal = ({ colIdx, offset, onClose }: any) => {
       >
         <div>
           <div className="p-6 space-y-6">
-            <p className="text-base leading-relaxed text-gray-500 dark:text-gray-400">
+            <p className="text-base leading-relaxed text-gray-500 dark:text-gray-400 sha">
               With less than a month to go before the European Union enacts new
               consumer privacy laws for its citizens, companies around the world
               are updating their terms of service agreements to comply.
