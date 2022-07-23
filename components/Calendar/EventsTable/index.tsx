@@ -30,10 +30,11 @@ const EventsTable = () => {
       <div className="flex h-[calc(100vh-144px)] overflow-y-scroll">
         <EventTimeBorder />
         <div className="flex-1 grid grid-cols-7">
-          {weekDaysWithMarkedEventsData.map((date) =>
+          {weekDaysWithMarkedEventsData.map((date, idx) =>
             Object.entries(date).map(([date, markedEvents]) => (
               <React.Fragment key={date}>
                 <EventVerticalSlot
+                  colIdx={idx}
                   date={date}
                   markedEvents={markedEvents}
                   // onClick={onClickEventSlot}
@@ -114,9 +115,14 @@ const EventsTable = () => {
   }
 };
 
-function EventVerticalSlot({ date, markedEvents }: any) {
+function EventVerticalSlot({ date, markedEvents, colIdx }: any) {
+  const stepY = React.useRef(148);
   const [isShowModal, setIsShowModal] = React.useState(false);
-  const [coordinate, setCoordinate] = React.useState({ x: '0', y: '144' });
+  const [offset, setOffset] = React.useState({
+    x: '0',
+    y: '0',
+    width: '0',
+  });
   const onOpenModal = () => {
     setIsShowModal(true);
   };
@@ -124,17 +130,30 @@ function EventVerticalSlot({ date, markedEvents }: any) {
     setIsShowModal(false);
   };
 
+  const filterCoodinateY = React.useCallback((coordinateY): string => {
+    const rangeY = [...Array(48).keys()].map((_, i) => i * 20 + stepY.current);
+    let c = -1;
+    while (true) {
+      c++;
+      if (rangeY[c] >= coordinateY) {
+        return '' + rangeY[c - 1];
+      }
+    }
+  }, []);
+
   const onClickEventSlot =
     (openModalCb: () => void) =>
     (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
       e.stopPropagation();
-      setCoordinate((prev) => ({
+      const width = e.currentTarget?.offsetWidth;
+      const filterdY = filterCoodinateY(e.clientY);
+      setOffset((prev) => ({
         ...prev,
         x: `${e.clientX}`,
-        y: `${e.clientY - 200}`,
+        y: filterdY,
+        width: `${width}`,
       }));
-      console.log('y', e.clientY);
-      console.log(e.currentTarget.getAttribute('data-datekey'));
+
       openModalCb();
     };
 
@@ -149,7 +168,7 @@ function EventVerticalSlot({ date, markedEvents }: any) {
           onClick={onHandleEventSlot}
         />
         {isShowModal && (
-          <SampleModal coordinate={coordinate} onClose={onCloseModal} />
+          <SampleModal colIdx={colIdx} offset={offset} onClose={onCloseModal} />
         )}
         <div className="realtive"></div>
         {/* {[...Array(24).keys()].map((_, i) => (
