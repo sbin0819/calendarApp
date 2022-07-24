@@ -7,7 +7,7 @@ const today = moment();
 const selectedWeek = [...Array(7).keys()].map((_, i) =>
   today
     .clone()
-    .week(today.week())
+    .week(today.week() - 1)
     .startOf('week')
     .add(1 + i, 'day')
     .format('YYYY-MM-DD'),
@@ -16,13 +16,14 @@ const selectedWeek = [...Array(7).keys()].map((_, i) =>
 type EventType = 'event' | 'todo' | 'alaram';
 
 interface EventSlotType {
+  id: string;
   startTime: string;
   endTime: string;
   title: string;
   description: string;
   type: EventType;
-  createdAt: string;
-  updatedAt: string; // updatedAt 최신 순에 따라 순서가 바뀜?
+  createdAt?: string | Date;
+  updatedAt?: string | Date; // updatedAt 최신 순에 따라 순서가 바뀜?
   order?: number;
 }
 
@@ -34,7 +35,7 @@ interface CalendarStore {
   currMonth: string;
   currDay: string;
   currDate: string;
-  selectedWeek?: any[]; //
+  selectedWeek: string[]; //
   selectedDay?: string; // 해당 날짜 ex 7일
   selectedSlot?: string; // 0 ~ 48 단위 24 * 2
   selectedWeekData: AllDataType; // 활성화된 주의 데이터를 보여주어야함 7 이상의 key 값이 생길 수 없음
@@ -51,8 +52,29 @@ const initialState: CalendarStore = {
   selectedSlot: undefined,
   selectedWeekData: {},
   allEventData: {
-    '2022-7-22': [],
-    '2022-7-23': [],
+    '2022-07-23': [],
+    '2022-07-24': [
+      {
+        id: '123121',
+        startTime: '00:00',
+        endTime: '01:00',
+        title: '테스트',
+        description: '상세내역',
+        createdAt: new Date(),
+        updatedAt: new Date(),
+        type: 'event',
+      },
+      {
+        id: '1222313121',
+        startTime: '02:30',
+        endTime: '03:30',
+        title: '테스트',
+        description: '상세내역',
+        createdAt: new Date(),
+        updatedAt: new Date(),
+        type: 'event',
+      },
+    ],
   },
 };
 

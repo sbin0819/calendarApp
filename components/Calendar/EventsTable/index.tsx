@@ -5,71 +5,19 @@ import useOnClickOutside from 'lib/useOnClickOutside';
 import useCalendar from '@store/calendar/useCalendar';
 
 const EventsTable = () => {
-  const { selectedWeek } = useCalendar();
-  const currYYMMDD = '2022-01-17';
-  const weekDays = [
-    '2022-01-17',
-    '2022-01-18',
-    '2022-01-19',
-    '2022-01-20',
-    '2022-01-21',
-    '2022-01-22',
-    '2022-01-23',
-  ];
-  const weekDaysWithMarkedEventsData = [
-    {
-      '2022-01-17': [
-        {
-          id: 123121,
-          startTime: '00:00',
-          endTime: '01:00',
-          title: '테스트',
-          description: '상세내역',
-          createdAt: new Date(),
-          updatedAt: new Date(),
-        },
-        {
-          id: 1222313121,
-          startTime: '02:30',
-          endTime: '03:30',
-          title: '테스트',
-          description: '상세내역',
-          createdAt: new Date(),
-          updatedAt: new Date(),
-        },
-      ],
-    },
-    { '2022-01-18': [] },
-    {
-      '2022-01-19': [
-        {
-          id: 1222313121,
-          startTime: '12:00',
-          endTime: '13:00',
-          title: '테스트',
-          description: '상세내역',
-          createdAt: new Date(),
-          updatedAt: new Date(),
-        },
-      ],
-    },
-    {
-      '2022-01-20': [
-        {
-          id: 12223131214,
-          startTime: '04:00',
-          endTime: '05:00',
-          title: '테스트',
-          description: '상세내역',
-          createdAt: new Date(),
-          updatedAt: new Date(),
-        },
-      ],
-    },
-    { '2022-01-21': [] },
-    { '2022-01-22': [] },
-    { '2022-01-23': [] },
-  ];
+  const { selectedWeek, allEventData } = useCalendar();
+  const [weekDaysWithMarkedEventsData, setWeekDaysWithMarkedEventsData] =
+    React.useState([]);
+  React.useEffect(() => {
+    const weekDaysWithMarkedEventsData = selectedWeek.map((week) => {
+      if (allEventData[week]) {
+        return { [week]: allEventData[week] };
+      } else {
+        return { [week]: [] };
+      }
+    });
+    setWeekDaysWithMarkedEventsData(weekDaysWithMarkedEventsData as []);
+  }, [allEventData, selectedWeek]);
 
   return (
     <div className="flex-1 min-w-[800px] overflow-x-scroll">
@@ -84,7 +32,6 @@ const EventsTable = () => {
                   colIdx={idx}
                   date={date}
                   markedEvents={markedEvents}
-                  // onClick={onClickEventSlot}
                 />
               </React.Fragment>
             )),
