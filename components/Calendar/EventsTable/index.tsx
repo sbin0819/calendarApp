@@ -122,6 +122,7 @@ function EventVerticalSlot({ date, markedEvents, colIdx }: any) {
     x: '0',
     y: '0',
     width: '0',
+    time: '0',
   });
   const onOpenModal = () => {
     setIsShowModal(true);
@@ -131,7 +132,7 @@ function EventVerticalSlot({ date, markedEvents, colIdx }: any) {
   };
 
   const filterCoodinateY = React.useCallback((coordinateY): string => {
-    const rangeY = [...Array(24).keys()].map((_, i) => i * 40 + stepY.current);
+    const rangeY = [...Array(48).keys()].map((_, i) => i * 20 + stepY.current);
     let c = -1;
     while (true) {
       c++;
@@ -145,15 +146,17 @@ function EventVerticalSlot({ date, markedEvents, colIdx }: any) {
     (openModalCb: () => void) =>
     (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
       e.stopPropagation();
+      // current width 정보
       const width = e.currentTarget?.offsetWidth;
-      const filterdY = filterCoodinateY(e.clientY);
+
       setOffset((prev) => ({
         ...prev,
         x: `${e.clientX}`,
-        y: filterdY,
+        y: filterCoodinateY(e.clientY),
         width: `${width}`,
       }));
 
+      // console.log(e.currentTarget.getAttribute('data-datekey'));
       openModalCb();
     };
 
