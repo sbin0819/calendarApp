@@ -1,4 +1,4 @@
-import { createSlice } from '@reduxjs/toolkit';
+import { createSlice, nanoid } from '@reduxjs/toolkit';
 import { PayloadAction } from '@reduxjs/toolkit';
 
 import moment from 'moment';
@@ -15,7 +15,7 @@ const selectedWeek = [...Array(7).keys()].map((_, i) =>
 
 type EventType = 'event' | 'todo' | 'alaram';
 
-interface EventSlotType {
+export interface SlotType {
   id: string;
   startTime: string;
   endTime: string;
@@ -27,8 +27,8 @@ interface EventSlotType {
   order?: number;
 }
 
-interface AllDataType {
-  [data: string]: EventSlotType[];
+export interface EventSlotType {
+  [data: string]: SlotType[];
 }
 interface CalendarStore {
   currYear: string;
@@ -38,8 +38,8 @@ interface CalendarStore {
   selectedWeek: string[]; //
   selectedDay?: string; // 해당 날짜 ex 7일
   selectedSlot?: string; // 0 ~ 48 단위 24 * 2
-  selectedWeekData: AllDataType; // 활성화된 주의 데이터를 보여주어야함 7 이상의 key 값이 생길 수 없음
-  allEventData: AllDataType; // 서버가 없기 때문에 전체 데이터를 저장해주어야함
+  selectedWeekData: EventSlotType; // 활성화된 주의 데이터를 보여주어야함 7 이상의 key 값이 생길 수 없음
+  allEventData: EventSlotType; // 서버가 없기 때문에 전체 데이터를 저장해주어야함
 }
 //  includedDays = [4,5,6,7,8,9,10]
 const initialState: CalendarStore = {
@@ -52,23 +52,22 @@ const initialState: CalendarStore = {
   selectedSlot: undefined,
   selectedWeekData: {},
   allEventData: {
-    '2022-07-23': [],
-    '2022-07-24': [
+    [moment(today).format('YYYY-MM-DD')]: [
       {
-        id: '123121',
+        id: nanoid(),
         startTime: '00:00',
         endTime: '01:00',
-        title: '테스트',
+        title: '이니셜 데이터 1',
         description: '상세내역',
         createdAt: new Date(),
         updatedAt: new Date(),
         type: 'event',
       },
       {
-        id: '1222313121',
+        id: nanoid(),
         startTime: '02:30',
         endTime: '03:30',
-        title: '테스트',
+        title: '이니셜 데이터 2',
         description: '상세내역',
         createdAt: new Date(),
         updatedAt: new Date(),

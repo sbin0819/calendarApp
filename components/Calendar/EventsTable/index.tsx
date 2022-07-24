@@ -1,13 +1,13 @@
 import React from 'react';
 import moment from 'moment';
 import SampleModal from '../Modal';
-import useOnClickOutside from 'lib/useOnClickOutside';
 import useCalendar from '@store/calendar/useCalendar';
+import type { SlotType } from 'store/calendar';
 
 const EventsTable = () => {
   const { selectedWeek, allEventData } = useCalendar();
   const [weekDaysWithMarkedEventsData, setWeekDaysWithMarkedEventsData] =
-    React.useState([]);
+    React.useState<SlotType[]>([]);
   React.useEffect(() => {
     const weekDaysWithMarkedEventsData = selectedWeek.map((week) => {
       if (allEventData[week]) {
@@ -16,7 +16,9 @@ const EventsTable = () => {
         return { [week]: [] };
       }
     });
-    setWeekDaysWithMarkedEventsData(weekDaysWithMarkedEventsData as []);
+    setWeekDaysWithMarkedEventsData(
+      weekDaysWithMarkedEventsData as SlotType[] | [],
+    );
   }, [allEventData, selectedWeek]);
 
   return (
