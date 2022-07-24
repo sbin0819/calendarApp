@@ -122,7 +122,7 @@ function EventVerticalSlot({ date, markedEvents, colIdx }: any) {
     x: '0',
     y: '0',
     width: '0',
-    time: '0',
+    time: 0,
   });
   const onOpenModal = () => {
     setIsShowModal(true);
@@ -131,13 +131,16 @@ function EventVerticalSlot({ date, markedEvents, colIdx }: any) {
     setIsShowModal(false);
   };
 
-  const filterCoodinateY = React.useCallback((coordinateY): string => {
-    const rangeY = [...Array(48).keys()].map((_, i) => i * 20 + stepY.current);
+  const filterCoodinateY = React.useCallback((coordinateY) => {
+    const rangeY = [...Array(48).keys()].map((_, i) => ({
+      y: '' + (i * 20 + stepY.current),
+      time: i,
+    }));
     let c = -1;
     while (true) {
       c++;
-      if (rangeY[c] >= coordinateY) {
-        return '' + rangeY[c - 1];
+      if (+rangeY[c].y >= coordinateY) {
+        return rangeY[c - 1];
       }
     }
   }, []);
@@ -152,7 +155,7 @@ function EventVerticalSlot({ date, markedEvents, colIdx }: any) {
       setOffset((prev) => ({
         ...prev,
         x: `${e.clientX}`,
-        y: filterCoodinateY(e.clientY),
+        ...filterCoodinateY(e.clientY),
         width: `${width}`,
       }));
 
@@ -174,15 +177,6 @@ function EventVerticalSlot({ date, markedEvents, colIdx }: any) {
           <SampleModal colIdx={colIdx} offset={offset} onClose={onCloseModal} />
         )}
         <div className="realtive"></div>
-        {/* {[...Array(24).keys()].map((_, i) => (
-        <div
-          className="flex flex-col justify-center h-[40px] border-l-[1px] border-b-[1px] time-slot-group"
-          key={i}
-        >
-          <div className="time-slot"></div>
-          <div className="time-slot"></div>
-        </div>
-      ))} */}
       </div>
     </React.Fragment>
   );
