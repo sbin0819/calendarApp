@@ -31,10 +31,10 @@ export interface EventSlotType {
   [data: string]: SlotType[];
 }
 interface CalendarStore {
+  currYYYYMMDD: string;
   currYear: string;
   currMonth: string;
   currDay: string;
-  currDate: string;
   selectedWeek: string[]; //
   selectedDay?: string; // 해당 날짜 ex 7일
   selectedSlot?: string; // 0 ~ 48 단위 24 * 2
@@ -43,10 +43,10 @@ interface CalendarStore {
 }
 //  includedDays = [4,5,6,7,8,9,10]
 const initialState: CalendarStore = {
+  currYYYYMMDD: moment(today).format('YYYY-MM-DD'),
   currYear: moment(today).format('YYYY'),
   currMonth: moment(today).format('M'),
   currDay: moment(today).format('DD'),
-  currDate: '목',
   selectedWeek: selectedWeek,
   selectedDay: undefined,
   selectedSlot: undefined,

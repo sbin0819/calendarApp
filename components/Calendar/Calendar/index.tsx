@@ -1,7 +1,8 @@
 import React from 'react';
+import moment, { Moment as MomentTypes } from 'moment';
+import { GrNext, GrPrevious } from 'react-icons/gr';
 import useCalendar from '@store/calendar/useCalendar';
 import useCalendarActions from '@store/calendar/useCalendarActions';
-import moment, { Moment as MomentTypes } from 'moment';
 
 const Calendar = () => {
   const [date, setdate] = React.useState<MomentTypes>(() => moment());
@@ -13,7 +14,7 @@ const Calendar = () => {
       ? setdate(date.clone().add(30, 'day'))
       : setdate(date.clone().subtract(30, 'day'));
 
-  const generateDate = (): JSX.Element[] => {
+  const generateDate = React.useCallback((): JSX.Element[] => {
     const today = date;
 
     const startWeek = today.clone().startOf('month').week();
@@ -76,7 +77,7 @@ const Calendar = () => {
       );
     }
     return calendar;
-  };
+  }, [date, updatedSelectedWeek]);
 
   return (
     <div className="px-[5px]">
@@ -84,8 +85,12 @@ const Calendar = () => {
         <div className="flex gap-2 justify-between px-[8px]">
           <span className="title">{date.format('YYYY년 MM월')}</span>
           <div className="flex gap-2">
-            <button onClick={() => jumpToMonth(0)}>prev</button>
-            <button onClick={() => jumpToMonth(1)}>next</button>
+            <button onClick={() => jumpToMonth(0)}>
+              <GrPrevious />
+            </button>
+            <button onClick={() => jumpToMonth(1)}>
+              <GrNext />
+            </button>
           </div>
         </div>
       </div>
