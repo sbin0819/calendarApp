@@ -1,5 +1,6 @@
 import { createSlice, nanoid } from '@reduxjs/toolkit';
 import { PayloadAction } from '@reduxjs/toolkit';
+import type { Moment as MomentTypes } from 'moment';
 
 import moment from 'moment';
 
@@ -31,24 +32,24 @@ export interface EventSlotType {
   [data: string]: SlotType[];
 }
 interface CalendarStore {
+  selectedDay: MomentTypes;
   currYYYYMMDD: string;
   currYear: string;
   currMonth: string;
   currDay: string;
   selectedWeek: string[]; //
-  selectedDay?: string; // 해당 날짜 ex 7일
   selectedSlot?: string; // 0 ~ 48 단위 24 * 2
   selectedWeekData: EventSlotType; // 활성화된 주의 데이터를 보여주어야함 7 이상의 key 값이 생길 수 없음
   allEventData: EventSlotType; // 서버가 없기 때문에 전체 데이터를 저장해주어야함
 }
 //  includedDays = [4,5,6,7,8,9,10]
 const initialState: CalendarStore = {
+  selectedDay: today,
   currYYYYMMDD: moment(today).format('YYYY-MM-DD'),
   currYear: moment(today).format('YYYY'),
   currMonth: moment(today).format('M'),
   currDay: moment(today).format('DD'),
   selectedWeek: selectedWeek,
-  selectedDay: undefined,
   selectedSlot: undefined,
   selectedWeekData: {},
   allEventData: {
@@ -81,7 +82,9 @@ export const calendarSlice = createSlice({
   name: 'calendar',
   initialState: initialState,
   reducers: {
-    selectedDate: (state) => {},
+    updateSelectedDate: (state, { payload: { selectedDay } }) => {
+      state.selectedDay = selectedDay;
+    },
     updatedSelectedWeek: (state, { payload: { selectedWeek } }) => {
       state.selectedWeek = selectedWeek;
     },
