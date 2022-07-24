@@ -31,3 +31,8 @@
 - EventTable에서 sample 데이터 화면 출력 작업
 - 이벤트 생성 모달 수정
 - Calendar 목 작업
+- Header 작업
+- calendar store 연결
+
+- 회고
+  - EventSlot 만드는 노력에 비해서 calendar 자체는 크게 어렵지 않았다.
