@@ -4,7 +4,7 @@ import { Header, Calendar, EventsTable } from '@components/Calendar';
 
 const SideNavigation = () => {
   return (
-    <div className="min-w-[256px] w-[256px] h-[100vh] bg-slate-200">
+    <div className="min-w-[256px] w-[256px] h-[100vh] border-r-2">
       <Calendar />
     </div>
   );

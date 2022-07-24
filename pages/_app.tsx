@@ -1,4 +1,5 @@
 import '../styles/globals.css';
+import 'moment/locale/ko';
 import type { AppProps } from 'next/app';
 import { wrapper } from '@store/store';
 
