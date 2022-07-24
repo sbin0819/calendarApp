@@ -2,8 +2,10 @@ import React from 'react';
 import moment from 'moment';
 import SampleModal from '../Modal';
 import useOnClickOutside from 'lib/useOnClickOutside';
+import useCalendar from '@store/calendar/useCalendar';
 
 const EventsTable = () => {
+  const { selectedWeek } = useCalendar();
   const currYYMMDD = '2022-01-17';
   const weekDays = [
     '2022-01-17',
@@ -93,6 +95,19 @@ const EventsTable = () => {
   );
 
   function EventWeekHeader() {
+    const { selectedWeek } = useCalendar();
+    const getDay = (key: string) => {
+      const dayObj = {
+        '1': '월',
+        '2': '화',
+        '3': '수',
+        '4': '목',
+        '5': '금',
+        '6': '토',
+        '0': '일',
+      };
+      return dayObj[key];
+    };
     return (
       <div className="flex" role="presentation">
         <div className="flex w-[92px] items-end">GMT+09</div>
@@ -100,34 +115,12 @@ const EventsTable = () => {
           role="columnheader"
           className="flex-1 grid grid-cols-7 h-[84px] border-t-[1px] border-b-[1px]"
         >
-          <div className="border-l-[1px] border-r-[1px]">
-            <div>월</div>
-            <div>17</div>
-          </div>
-          <div className="border-r-[1px]">
-            <div>화</div>
-            <div>18</div>
-          </div>
-          <div className="border-r-[1px]">
-            <div>수</div>
-            <div>19</div>
-          </div>
-          <div className="border-r-[1px]">
-            <div>목</div>
-            <div>20</div>
-          </div>
-          <div className="border-r-[1px]">
-            <div>금</div>
-            <div>21</div>
-          </div>
-          <div className="border-r-[1px]">
-            <div>토</div>
-            <div>17</div>
-          </div>
-          <div className="">
-            <div>일</div>
-            <div>17</div>
-          </div>
+          {selectedWeek?.map((date) => (
+            <div className="border-l-[1px] border-r-[1px]" key={date}>
+              <div>{getDay('' + moment(date).day())}</div>
+              <div>{moment(date).format('D')}</div>
+            </div>
+          ))}
         </div>
       </div>
     );

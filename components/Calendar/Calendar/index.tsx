@@ -1,9 +1,11 @@
 import React from 'react';
 import useCalendar from '@store/calendar/useCalendar';
+import useCalendarActions from '@store/calendar/useCalendarActions';
 import moment, { Moment as MomentTypes } from 'moment';
 
-function Calendar() {
+const Calendar = () => {
   const [date, setdate] = React.useState<MomentTypes>(() => moment());
+  const { updatedSelectedWeek } = useCalendarActions();
 
   const handleDayClick = (current: MomentTypes) => setdate(moment(current));
   const jumpToMonth = (num: number) =>
@@ -11,7 +13,7 @@ function Calendar() {
       ? setdate(date.clone().add(30, 'day'))
       : setdate(date.clone().subtract(30, 'day'));
 
-  function generateDate(): JSX.Element[] {
+  const generateDate = (): JSX.Element[] => {
     const today = date;
 
     const startWeek = today.clone().startOf('month').week();
@@ -54,7 +56,7 @@ function Calendar() {
                   key={i}
                   style={{ color: isGrayed ? '#999' : '' }}
                   onClick={() => {
-                    const targetWeek = [...Array(7).keys()].map((_, i) =>
+                    const selectedWeek = [...Array(7).keys()].map((_, i) =>
                       today
                         .clone()
                         .week(week)
@@ -62,6 +64,7 @@ function Calendar() {
                         .add(n + 1 + i, 'day')
                         .format('YYYY-MM-DD'),
                     );
+                    updatedSelectedWeek({ selectedWeek });
                     handleDayClick(current);
                   }}
                 >
@@ -73,7 +76,7 @@ function Calendar() {
       );
     }
     return calendar;
-  }
+  };
 
   return (
     <div className="px-[5px]">
@@ -100,5 +103,5 @@ function Calendar() {
       </div>
     </div>
   );
-}
+};
 export default Calendar;

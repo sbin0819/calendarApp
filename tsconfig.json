@@ -22,6 +22,6 @@
       "@store/*": ["store/*"]
     }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"],
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", "pages/about.jsx"],
   "exclude": ["node_modules"]
 }

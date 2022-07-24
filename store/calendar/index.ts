@@ -3,7 +3,15 @@ import { PayloadAction } from '@reduxjs/toolkit';
 
 import moment from 'moment';
 
-const today = new Date();
+const today = moment();
+const selectedWeek = [...Array(7).keys()].map((_, i) =>
+  today
+    .clone()
+    .week(today.week())
+    .startOf('week')
+    .add(1 + i, 'day')
+    .format('YYYY-MM-DD'),
+);
 
 type EventType = 'event' | 'todo' | 'alaram';
 
@@ -26,7 +34,7 @@ interface CalendarStore {
   currMonth: string;
   currDay: string;
   currDate: string;
-  selectedWeek?: string; //
+  selectedWeek?: any[]; //
   selectedDay?: string; // 해당 날짜 ex 7일
   selectedSlot?: string; // 0 ~ 48 단위 24 * 2
   selectedWeekData: AllDataType; // 활성화된 주의 데이터를 보여주어야함 7 이상의 key 값이 생길 수 없음
@@ -38,7 +46,7 @@ const initialState: CalendarStore = {
   currMonth: moment(today).format('M'),
   currDay: moment(today).format('DD'),
   currDate: '목',
-  selectedWeek: undefined,
+  selectedWeek: selectedWeek,
   selectedDay: undefined,
   selectedSlot: undefined,
   selectedWeekData: {},
@@ -53,6 +61,9 @@ export const calendarSlice = createSlice({
   initialState: initialState,
   reducers: {
     selectedDate: (state) => {},
+    updatedSelectedWeek: (state, { payload: { selectedWeek } }) => {
+      state.selectedWeek = selectedWeek;
+    },
     nextWeek: (state) => {
       // 다음주의 날짜들 중 같은 인덱스
     },
