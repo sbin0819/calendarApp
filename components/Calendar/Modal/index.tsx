@@ -9,11 +9,7 @@ const EventSlotModal = ({ colIdx, offset, onClose }: any) => {
     onClose();
   });
   const currentMarkedTimeInfo = React.useCallback(() => {
-    if (offset.time % 2 == 1) {
-      return `${offset.time}:00 ~ ${offset.time + 1}:00`;
-    } else {
-      return `${offset.time}:30 ~ ${offset.time + 1}:30`;
-    }
+    return `${offset.time}:00 ~ ${offset.time + 1}:00`;
   }, [offset]);
 
   return (
