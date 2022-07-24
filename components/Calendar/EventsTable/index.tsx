@@ -220,7 +220,6 @@ function EventVerticalSlot({ date, markedEvents, colIdx }: any) {
           +el.startTime.slice(-2) === 0
             ? +el.startTime.slice(0, 2) * 40
             : +el.startTime.slice(0, 2) * 40 + 20;
-        console.log(top);
         return (
           <div
             key={el.id}
