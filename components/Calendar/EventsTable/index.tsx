@@ -28,8 +28,8 @@ const EventsTable = () => {
         },
         {
           id: 1222313121,
-          startTime: '02:00',
-          endTime: '03:00',
+          startTime: '02:30',
+          endTime: '03:30',
           title: '테스트',
           description: '상세내역',
           createdAt: new Date(),
@@ -216,7 +216,10 @@ function EventVerticalSlot({ date, markedEvents, colIdx }: any) {
       const markedElements = markedEvents.map((el) => {
         const height =
           (+el.endTime.slice(0, 2) - +el.startTime.slice(0, 2)) * 40;
-        const top = +el.startTime.slice(0, 2) * 40;
+        const top =
+          +el.startTime.slice(-2) === 0
+            ? +el.startTime.slice(0, 2) * 40
+            : +el.startTime.slice(0, 2) * 40 + 20;
         console.log(top);
         return (
           <div
