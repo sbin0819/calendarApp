@@ -15,10 +15,55 @@ const EventsTable = () => {
     '2022-01-23',
   ];
   const weekDaysWithMarkedEventsData = [
-    { '2022-01-17': [] },
+    {
+      '2022-01-17': [
+        {
+          id: 123121,
+          startTime: '00:00',
+          endTime: '01:00',
+          title: '테스트',
+          description: '상세내역',
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        },
+        {
+          id: 1222313121,
+          startTime: '02:30',
+          endTime: '03:30',
+          title: '테스트',
+          description: '상세내역',
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        },
+      ],
+    },
     { '2022-01-18': [] },
-    { '2022-01-19': [] },
-    { '2022-01-20': [] },
+    {
+      '2022-01-19': [
+        {
+          id: 1222313121,
+          startTime: '12:00',
+          endTime: '13:00',
+          title: '테스트',
+          description: '상세내역',
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        },
+      ],
+    },
+    {
+      '2022-01-20': [
+        {
+          id: 12223131214,
+          startTime: '04:00',
+          endTime: '05:00',
+          title: '테스트',
+          description: '상세내역',
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        },
+      ],
+    },
     { '2022-01-21': [] },
     { '2022-01-22': [] },
     { '2022-01-23': [] },
@@ -117,11 +162,14 @@ const EventsTable = () => {
 
 function EventVerticalSlot({ date, markedEvents, colIdx }: any) {
   const stepY = React.useRef(148);
+  const [markedEventsElement, setMarkedEventsElement] = React.useState<any>([]);
   const [isShowModal, setIsShowModal] = React.useState(false);
   const [offset, setOffset] = React.useState({
     x: '0',
     y: '0',
     width: '0',
+    time: 0,
+    date: '',
   });
   const onOpenModal = () => {
     setIsShowModal(true);
@@ -130,13 +178,16 @@ function EventVerticalSlot({ date, markedEvents, colIdx }: any) {
     setIsShowModal(false);
   };
 
-  const filterCoodinateY = React.useCallback((coordinateY): string => {
-    const rangeY = [...Array(24).keys()].map((_, i) => i * 40 + stepY.current);
+  const selectedSlotFilterY = React.useCallback((coordinateY) => {
+    const rangeY = [...Array(24).keys()].map((_, i) => ({
+      y: '' + (i * 40 + stepY.current),
+      time: i,
+    }));
     let c = -1;
     while (true) {
       c++;
-      if (rangeY[c] >= coordinateY) {
-        return '' + rangeY[c - 1];
+      if (+rangeY[c].y >= coordinateY) {
+        return rangeY[c - 1];
       }
     }
   }, []);
@@ -145,23 +196,53 @@ function EventVerticalSlot({ date, markedEvents, colIdx }: any) {
     (openModalCb: () => void) =>
     (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
       e.stopPropagation();
+      // current width 정보
       const width = e.currentTarget?.offsetWidth;
-      const filterdY = filterCoodinateY(e.clientY);
+      const date = e.currentTarget.getAttribute('data-datekey');
       setOffset((prev) => ({
         ...prev,
         x: `${e.clientX}`,
-        y: filterdY,
+        ...selectedSlotFilterY(e.clientY),
         width: `${width}`,
+        date: date || '',
       }));
-
       openModalCb();
     };
 
   const onHandleEventSlot = onClickEventSlot(onOpenModal);
+
+  React.useEffect(() => {
+    if (markedEvents.length > 0) {
+      const markedElements = markedEvents.map((el) => {
+        const height =
+          (+el.endTime.slice(0, 2) - +el.startTime.slice(0, 2)) * 40;
+        const top =
+          +el.startTime.slice(-2) === 0
+            ? +el.startTime.slice(0, 2) * 40
+            : +el.startTime.slice(0, 2) * 40 + 20;
+        console.log(top);
+        return (
+          <div
+            key={el.id}
+            className={`absolute bg-[#a2c2d8] w-full rounded-md`}
+            style={{
+              top: `${top}px`,
+              height: `${height}px`,
+            }}
+          >
+            <div className="text-[10px] pl-3 pt-[1px]">{el.title}</div>
+            <div className="text-[10px] pl-3">
+              {el.startTime} ~ {el.endTime}
+            </div>
+          </div>
+        );
+      });
+      setMarkedEventsElement(markedElements);
+    }
+  }, [markedEvents]);
   return (
     <React.Fragment>
       <div className="relative border-r-[1px]">
-        {/* 추가 작업 필요 */}
         <div
           className="absolute top-0 bottom-0 left-0 right-0 h-[960px]"
           data-datekey={date}
@@ -170,16 +251,9 @@ function EventVerticalSlot({ date, markedEvents, colIdx }: any) {
         {isShowModal && (
           <SampleModal colIdx={colIdx} offset={offset} onClose={onCloseModal} />
         )}
-        <div className="realtive"></div>
-        {/* {[...Array(24).keys()].map((_, i) => (
-        <div
-          className="flex flex-col justify-center h-[40px] border-l-[1px] border-b-[1px] time-slot-group"
-          key={i}
-        >
-          <div className="time-slot"></div>
-          <div className="time-slot"></div>
+        <div className="realtive">
+          {markedEventsElement.length > 0 && markedEventsElement}
         </div>
-      ))} */}
       </div>
     </React.Fragment>
   );
