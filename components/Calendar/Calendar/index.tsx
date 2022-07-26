@@ -6,7 +6,8 @@ import useCalendarActions from '@store/calendar/useCalendarActions';
 
 const Calendar = () => {
   const [date, setdate] = React.useState<MomentTypes>(() => moment());
-  const { updatedSelectedWeek, updateSelectedDate } = useCalendarActions();
+  const { updateCurrYYYYMMDD, updatedSelectedWeek, updateSelectedDate } =
+    useCalendarActions();
 
   const handleDayClick = (current: MomentTypes) => setdate(moment(current));
   const jumpToMonth = (num: number) =>
@@ -51,11 +52,15 @@ const Calendar = () => {
 
               return (
                 <div
-                  className={`box ${
-                    isSelected && 'text-red-400'
-                  } flex flex-1 items-center justify-center cursor-pointer`}
+                  className={`box flex flex-1 items-center justify-center cursor-pointer`}
                   key={i}
-                  style={{ color: isGrayed ? '#999' : '' }}
+                  style={{
+                    color: isGrayed
+                      ? '#999'
+                      : isSelected
+                      ? 'tomato'
+                      : 'inherit',
+                  }}
                   onClick={() => {
                     const selectedWeek = [...Array(7).keys()].map((_, i) =>
                       today
@@ -65,6 +70,9 @@ const Calendar = () => {
                         .add(n + 1 + i, 'day')
                         .format('YYYY-MM-DD'),
                     );
+                    updateCurrYYYYMMDD({
+                      currYYYYMMDD: moment(today).format('YYYY-MM-DD'),
+                    });
                     updateSelectedDate({
                       selectedDay: current,
                     });

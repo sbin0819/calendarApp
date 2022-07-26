@@ -3,19 +3,19 @@ import { PayloadAction } from '@reduxjs/toolkit';
 import type { Moment as MomentTypes } from 'moment';
 
 import moment from 'moment';
+import 'moment/locale/ko';
 
 const today = moment();
 const selectedWeek = [...Array(7).keys()].map((_, i) =>
   today
     .clone()
-    .week(today.week() - 1)
+    .week(today.week())
     .startOf('week')
     .add(1 + i, 'day')
     .format('YYYY-MM-DD'),
 );
 
 type EventType = 'event' | 'todo' | 'alaram';
-
 export interface SlotType {
   id: string;
   startTime: string;
@@ -34,9 +34,6 @@ export interface EventSlotType {
 interface CalendarStore {
   selectedDay: MomentTypes;
   currYYYYMMDD: string;
-  currYear: string;
-  currMonth: string;
-  currDay: string;
   selectedWeek: string[]; //
   selectedSlot?: string; // 0 ~ 48 단위 24 * 2
   selectedWeekData: EventSlotType; // 활성화된 주의 데이터를 보여주어야함 7 이상의 key 값이 생길 수 없음
@@ -46,9 +43,6 @@ interface CalendarStore {
 const initialState: CalendarStore = {
   selectedDay: today,
   currYYYYMMDD: moment(today).format('YYYY-MM-DD'),
-  currYear: moment(today).format('YYYY'),
-  currMonth: moment(today).format('M'),
-  currDay: moment(today).format('DD'),
   selectedWeek: selectedWeek,
   selectedSlot: undefined,
   selectedWeekData: {},
@@ -82,6 +76,9 @@ export const calendarSlice = createSlice({
   name: 'calendar',
   initialState: initialState,
   reducers: {
+    updateCurrYYYYMMDD: (state, { payload: { currYYYYMMDD } }) => {
+      state.currYYYYMMDD = currYYYYMMDD;
+    },
     updateSelectedDate: (state, { payload: { selectedDay } }) => {
       state.selectedDay = selectedDay;
     },

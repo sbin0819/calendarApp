@@ -21,6 +21,10 @@ const reducer = (state: any, action: any) => {
 export const store = configureStore({
   reducer,
   devTools: process.env.APP_ENV === 'production' ? false : true,
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware({
+      serializableCheck: false,
+    }),
 });
 
 const initStore: MakeStore<any> = () => {
