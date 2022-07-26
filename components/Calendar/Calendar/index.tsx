@@ -51,11 +51,15 @@ const Calendar = () => {
 
               return (
                 <div
-                  className={`box ${
-                    isSelected && 'text-red-400'
-                  } flex flex-1 items-center justify-center cursor-pointer`}
+                  className={`box flex flex-1 items-center justify-center cursor-pointer`}
                   key={i}
-                  style={{ color: isGrayed ? '#999' : '' }}
+                  style={{
+                    color: isGrayed
+                      ? '#999'
+                      : isSelected
+                      ? 'tomato'
+                      : 'inherit',
+                  }}
                   onClick={() => {
                     const selectedWeek = [...Array(7).keys()].map((_, i) =>
                       today
