@@ -4,31 +4,28 @@ import useCalendar from '@store/calendar/useCalendar';
 import useCalendarActions from '@store/calendar/useCalendarActions';
 import { GrNext, GrPrevious } from 'react-icons/gr';
 const Header = () => {
-  const accumulateNumberRef = React.useRef<number>(0);
   const { currYYYYMMDD, selectedDay } = useCalendar();
-  const { updateCurrYYYYMMDD, updatedSelectedWeek } = useCalendarActions();
-  const moveWeek = (type: string) => {
-    if (type === 'add') {
-      accumulateNumberRef.current += 1;
-    } else {
-      accumulateNumberRef.current -= 1;
-    }
-    const currYYYYMMDD = selectedDay
+  const { updateSelectedDate, updateCurrYYYYMMDD, updatedSelectedWeek } =
+    useCalendarActions();
+  const moveWeek = (num: number) => {
+    const newCurrYYYYMMDD = selectedDay
       .clone()
-      .week(selectedDay.week() + accumulateNumberRef.current)
+      .week(selectedDay.week() + num)
       .startOf('week')
       .format('YYYY-MM-DD');
-    updateCurrYYYYMMDD({ currYYYYMMDD });
     const newSelectedWeek = [...Array(7).keys()].map((_, i) =>
       selectedDay
         .clone()
-        .week(selectedDay.week() + accumulateNumberRef.current)
+        .week(selectedDay.week() + num)
         .startOf('week')
         .add(1 + i, 'day')
         .format('YYYY-MM-DD'),
     );
+    updateSelectedDate({ selectedDay: moment(newCurrYYYYMMDD) });
+    updateCurrYYYYMMDD({ currYYYYMMDD: newCurrYYYYMMDD });
     updatedSelectedWeek({ selectedWeek: newSelectedWeek });
   };
+
   return (
     <div className="flex p-[8px] h-[64px] items-center px-10 gap-12">
       <div>캘린더</div>
@@ -36,11 +33,11 @@ const Header = () => {
       <div className="flex gap-4">
         <GrPrevious
           className="cursor-pointer text-xl"
-          onClick={() => moveWeek('minus')}
+          onClick={() => moveWeek(-1)}
         />
         <GrNext
           className="cursor-pointer text-xl"
-          onClick={() => moveWeek('add')}
+          onClick={() => moveWeek(1)}
         />
       </div>
       <div className="text-2xl">

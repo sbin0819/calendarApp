@@ -32,7 +32,7 @@ export interface EventSlotType {
   [data: string]: SlotType[];
 }
 interface CalendarStore {
-  selectedDay: any;
+  selectedDay: MomentTypes;
   currYYYYMMDD: string;
   selectedWeek: string[]; //
   selectedSlot?: string; // 0 ~ 48 단위 24 * 2
