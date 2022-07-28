@@ -3,6 +3,7 @@ import moment from 'moment';
 import SampleModal from '../Modal';
 import useCalendar from '@store/calendar/useCalendar';
 import type { SlotType } from 'store/calendar';
+import useWindowSize from 'lib/useWindowSize';
 
 const EventsTable = () => {
   const { selectedWeek, allEventData } = useCalendar();
@@ -76,6 +77,7 @@ const EventsTable = () => {
   }
 
   function EventTimeBorder() {
+    const { width } = useWindowSize();
     return (
       <div className="flex flex-col">
         <div className="flex-1  w-[92px]">
@@ -83,9 +85,10 @@ const EventsTable = () => {
             {[...Array(24).keys()].map((_, i) => (
               <div
                 className={
-                  'relative flex justify-center ml-[80px] h-[40px]  pr-[calc(100vw-348px)]  border-b-[1px] border-red-300'
+                  `relative flex justify-center ml-[80px] h-[40px] border-b-[1px] border-red-300`
                   // ?? window 사이즈에 따라 pr 값 변경
                 }
+                style={{ width: `${width - 340}px` }}
                 key={i}
               >
                 {i !== 0 && (
@@ -121,8 +124,8 @@ function EventVerticalSlot({ date, markedEvents, colIdx }: any) {
   };
 
   const selectedSlotFilterY = React.useCallback((coordinateY) => {
-    const rangeY = [...Array(24).keys()].map((_, i) => ({
-      y: '' + (i * 40 + stepY.current),
+    const rangeY = [...Array(48).keys()].map((_, i) => ({
+      y: '' + (i * 20 + stepY.current),
       time: i,
     }));
     let c = -1;

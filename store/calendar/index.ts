@@ -61,7 +61,7 @@ const initialState: CalendarStore = {
       {
         id: nanoid(),
         startTime: '02:30',
-        endTime: '03:30',
+        endTime: '03:15',
         title: '이니셜 데이터 2',
         description: '상세내역',
         createdAt: new Date(),
