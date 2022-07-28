@@ -51,27 +51,18 @@ const initialState: CalendarStore = {
       {
         id: nanoid(),
         startTime: '00:00',
-        endTime: '01:00',
+        endTime: '02:40',
         title: '이니셜 데이터 1',
         description: '상세내역',
         createdAt: new Date(),
         updatedAt: new Date(),
         type: 'event',
       },
+
       {
         id: nanoid(),
-        startTime: '00:00',
-        endTime: '01:00',
-        title: '이니셜 데이터 중복 1',
-        description: '상세내역',
-        createdAt: new Date(),
-        updatedAt: new Date(),
-        type: 'event',
-      },
-      {
-        id: nanoid(),
-        startTime: '02:30',
-        endTime: '03:15',
+        startTime: '03:30',
+        endTime: '05:15',
         title: '이니셜 데이터 2',
         description: '상세내역',
         createdAt: new Date(),
@@ -94,6 +85,9 @@ export const calendarSlice = createSlice({
     },
     updatedSelectedWeek: (state, { payload: { selectedWeek } }) => {
       state.selectedWeek = selectedWeek;
+    },
+    updateSelectedSlot: (state, { payload: selectedSlot }) => {
+      state.selectedSlot = selectedSlot;
     },
     createEvent: (state, { payload: { key, data } }) => {
       if (state.allEventData.hasOwnProperty(key)) {
