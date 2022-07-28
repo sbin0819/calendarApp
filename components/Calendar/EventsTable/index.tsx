@@ -1,14 +1,14 @@
 import React from 'react';
 import moment from 'moment';
 import { CreateModal, UpdateModal } from '../Modal';
+import useCalendar from '@store/calendar/useCalendar';
 import type { SlotType } from 'store/calendar';
 import useWindowSize from 'lib/useWindowSize';
-import useCalendar from '@store/calendar/useCalendar';
 import useCalendarActions from '@store/calendar/useCalendarActions';
-import { nanoid } from '@reduxjs/toolkit';
 
 const EventsTable = () => {
   const { selectedWeek, allEventData } = useCalendar();
+
   const [weekDaysWithMarkedEventsData, setWeekDaysWithMarkedEventsData] =
     React.useState<SlotType[]>([]);
   React.useEffect(() => {
@@ -108,12 +108,9 @@ const EventsTable = () => {
 
 function EventVerticalSlot({ date, markedEvents, colIdx }: any) {
   const { updateSelectedSlot } = useCalendarActions();
-
+  const [modalType, setModalType] = React.useState('default');
   const stepY = React.useRef(148);
   const [markedEventsElement, setMarkedEventsElement] = React.useState<any>([]);
-  const [modalType, setModalType] = React.useState<'default' | 'update'>(
-    'default',
-  );
   const [isShowModal, setIsShowModal] = React.useState(false);
   const [offset, setOffset] = React.useState({
     x: '0',
@@ -165,7 +162,7 @@ function EventVerticalSlot({ date, markedEvents, colIdx }: any) {
     }
   }, []);
 
-  const onClickCreateEventSlot =
+  const onClickEventSlot =
     (openModalCb: () => void) =>
     (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
       e.stopPropagation();
@@ -183,9 +180,10 @@ function EventVerticalSlot({ date, markedEvents, colIdx }: any) {
       openModalCb();
     };
 
-  const onClickUpdateEventSlot =
+  const onClickEventSlot2 =
     (openModalCb: () => void) =>
-    (e: React.MouseEvent<HTMLDivElement, MouseEvent>, data) => {
+    (e: React.MouseEvent<HTMLDivElement, MouseEvent>) =>
+    (data) => {
       e.stopPropagation();
       // current width 정보
       const width = e.currentTarget?.offsetWidth;
@@ -197,13 +195,13 @@ function EventVerticalSlot({ date, markedEvents, colIdx }: any) {
         width: `${width}`,
         date: date || '',
       }));
-      setModalType('update');
       updateSelectedSlot({ selectedSlot: data });
+      setModalType('update');
       openModalCb();
     };
 
-  const onHandleEventCreateSlot = onClickCreateEventSlot(onOpenModal);
-  const onHandleEventUpdateSlot = onClickUpdateEventSlot(onOpenModal);
+  const onHandleCreateEventSlot = onClickEventSlot(onOpenModal);
+  const onHandleUpdateEventSlot = onClickEventSlot2(onOpenModal);
 
   //! include time에 대해서 ui를 재설정 할 필요가 있음
   React.useEffect(() => {
@@ -216,22 +214,20 @@ function EventVerticalSlot({ date, markedEvents, colIdx }: any) {
             ? +el.startTime.slice(0, 2) * 40
             : +el.startTime.slice(0, 2) * 40 + 20;
         return (
-          <>
-            <div
-              key={el.id}
-              className={`absolute bg-[#a2c2d8] w-full rounded-md overflow-hidden cursor-pointer`}
-              style={{
-                top: `${top}px`,
-                height: `${height}px`,
-              }}
-              onClick={(event) => onHandleEventUpdateSlot(event, el)}
-            >
-              <div className="text-[10px] pl-3 pt-[1px]">{el.title}</div>
-              <div className="text-[10px] pl-3">
-                {el.startTime} ~ {el.endTime}
-              </div>
+          <div
+            key={el.id}
+            className={`absolute bg-[#a2c2d8] w-full rounded-md overflow-hidden cursor-pointer`}
+            style={{
+              top: `${top}px`,
+              height: `${height}px`,
+            }}
+            onClick={(event) => onHandleUpdateEventSlot(event)(el)}
+          >
+            <div className="text-[10px] pl-3 pt-[1px]">{el.title}</div>
+            <div className="text-[10px] pl-3">
+              {el.startTime} ~ {el.endTime}
             </div>
-          </>
+          </div>
         );
       });
       setMarkedEventsElement(markedElements);
@@ -244,7 +240,7 @@ function EventVerticalSlot({ date, markedEvents, colIdx }: any) {
         <div
           className="absolute top-0 bottom-0 left-0 right-0 h-[960px]"
           data-datekey={date}
-          onClick={onHandleEventCreateSlot}
+          onClick={onHandleCreateEventSlot}
         />
         {isShowModal && modalType === 'default' ? (
           <CreateModal colIdx={colIdx} offset={offset} onClose={onCloseModal} />

@@ -83,9 +83,9 @@ const FormModal = ({ offset, onClose }: any) => {
         <div>옵션 더보기</div>
         <div
           className="cursor-pointer bg-sky-500 text-white px-4 py-2"
-          onClick={createEventSlot}
+          // onClick={createEventSlot}
         >
-          저장
+          수정
         </div>
       </div>
     </div>
