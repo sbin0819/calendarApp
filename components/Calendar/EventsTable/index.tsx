@@ -1,12 +1,14 @@
 import React from 'react';
 import moment from 'moment';
-import SampleModal from '../Modal';
+import { CreateModal, UpdateModal } from '../Modal';
 import useCalendar from '@store/calendar/useCalendar';
 import type { SlotType } from 'store/calendar';
 import useWindowSize from 'lib/useWindowSize';
+import useCalendarActions from '@store/calendar/useCalendarActions';
 
 const EventsTable = () => {
   const { selectedWeek, allEventData } = useCalendar();
+
   const [weekDaysWithMarkedEventsData, setWeekDaysWithMarkedEventsData] =
     React.useState<SlotType[]>([]);
   React.useEffect(() => {
@@ -105,6 +107,8 @@ const EventsTable = () => {
 };
 
 function EventVerticalSlot({ date, markedEvents, colIdx }: any) {
+  const { updateSelectedSlot } = useCalendarActions();
+  const [modalType, setModalType] = React.useState('default');
   const stepY = React.useRef(148);
   const [markedEventsElement, setMarkedEventsElement] = React.useState<any>([]);
   const [isShowModal, setIsShowModal] = React.useState(false);
@@ -172,10 +176,32 @@ function EventVerticalSlot({ date, markedEvents, colIdx }: any) {
         width: `${width}`,
         date: date || '',
       }));
+      setModalType('default');
       openModalCb();
     };
 
-  const onHandleEventSlot = onClickEventSlot(onOpenModal);
+  const onClickEventSlot2 =
+    (openModalCb: () => void) =>
+    (e: React.MouseEvent<HTMLDivElement, MouseEvent>) =>
+    (data) => {
+      e.stopPropagation();
+      // current width 정보
+      const width = e.currentTarget?.offsetWidth;
+      const date = e.currentTarget.getAttribute('data-datekey');
+      setOffset((prev) => ({
+        ...prev,
+        x: `${e.clientX}`,
+        ...selectedSlotFilterY(e.clientY),
+        width: `${width}`,
+        date: date || '',
+      }));
+      updateSelectedSlot({ selectedSlot: data });
+      setModalType('update');
+      openModalCb();
+    };
+
+  const onHandleCreateEventSlot = onClickEventSlot(onOpenModal);
+  const onHandleUpdateEventSlot = onClickEventSlot2(onOpenModal);
 
   //! include time에 대해서 ui를 재설정 할 필요가 있음
   React.useEffect(() => {
@@ -190,11 +216,12 @@ function EventVerticalSlot({ date, markedEvents, colIdx }: any) {
         return (
           <div
             key={el.id}
-            className={`absolute bg-[#a2c2d8] w-full rounded-md overflow-hidden`}
+            className={`absolute bg-[#a2c2d8] w-full rounded-md overflow-hidden cursor-pointer`}
             style={{
               top: `${top}px`,
               height: `${height}px`,
             }}
+            onClick={(event) => onHandleUpdateEventSlot(event)(el)}
           >
             <div className="text-[10px] pl-3 pt-[1px]">{el.title}</div>
             <div className="text-[10px] pl-3">
@@ -213,10 +240,19 @@ function EventVerticalSlot({ date, markedEvents, colIdx }: any) {
         <div
           className="absolute top-0 bottom-0 left-0 right-0 h-[960px]"
           data-datekey={date}
-          onClick={onHandleEventSlot}
+          onClick={onHandleCreateEventSlot}
         />
-        {isShowModal && (
-          <SampleModal colIdx={colIdx} offset={offset} onClose={onCloseModal} />
+        {isShowModal && modalType === 'default' ? (
+          <CreateModal colIdx={colIdx} offset={offset} onClose={onCloseModal} />
+        ) : (
+          isShowModal &&
+          modalType === 'update' && (
+            <UpdateModal
+              colIdx={colIdx}
+              offset={offset}
+              onClose={onCloseModal}
+            />
+          )
         )}
         <div className="realtive">
           {markedEventsElement.length > 0 && markedEventsElement}
