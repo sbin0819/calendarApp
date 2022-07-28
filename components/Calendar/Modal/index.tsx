@@ -96,7 +96,12 @@ const FormModal = ({ offset, onClose }: any) => {
       </div>
       <div className="flex justify-end items-center h-[44px] gap-4 px-[16px]">
         <div>옵션 더보기</div>
-        <div onClick={createEventSlot}>저장</div>
+        <div
+          className="cursor-pointer bg-sky-500 text-white px-4 py-2"
+          onClick={createEventSlot}
+        >
+          저장
+        </div>
       </div>
     </div>
   );
