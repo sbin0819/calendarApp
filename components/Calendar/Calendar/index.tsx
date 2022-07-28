@@ -88,7 +88,7 @@ const Calendar = () => {
       );
     }
     return calendar;
-  }, [date, updateSelectedDate, updatedSelectedWeek]);
+  }, [date, updateCurrYYYYMMDD, updateSelectedDate, updatedSelectedWeek]);
 
   return (
     <div className="px-[5px]">

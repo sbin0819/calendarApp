@@ -60,6 +60,16 @@ const initialState: CalendarStore = {
       },
       {
         id: nanoid(),
+        startTime: '00:00',
+        endTime: '01:00',
+        title: '이니셜 데이터 중복 1',
+        description: '상세내역',
+        createdAt: new Date(),
+        updatedAt: new Date(),
+        type: 'event',
+      },
+      {
+        id: nanoid(),
         startTime: '02:30',
         endTime: '03:15',
         title: '이니셜 데이터 2',
@@ -84,6 +94,13 @@ export const calendarSlice = createSlice({
     },
     updatedSelectedWeek: (state, { payload: { selectedWeek } }) => {
       state.selectedWeek = selectedWeek;
+    },
+    createEvent: (state, { payload: { key, data } }) => {
+      if (state.allEventData.hasOwnProperty(key)) {
+        state.allEventData[key] = [...state.allEventData[key], data];
+      } else {
+        state.allEventData[key] = [data];
+      }
     },
     nextWeek: (state) => {
       // 다음주의 날짜들 중 같은 인덱스

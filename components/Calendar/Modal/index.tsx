@@ -1,5 +1,7 @@
 import React from 'react';
 import useOnClickOutside from 'lib/useOnClickOutside';
+import useCalendarActions from '@store/calendar/useCalendarActions';
+import { nanoid } from '@reduxjs/toolkit';
 
 // 금토일은 왼쪽
 //
@@ -8,15 +10,6 @@ const EventSlotModal = ({ colIdx, offset, onClose }: any) => {
   useOnClickOutside(ref, () => {
     onClose();
   });
-  const currentMarkedTimeInfo = React.useCallback(() => {
-    if (offset.time % 2 === 1) {
-      return `${Math.floor(offset.time / 2)}:30 ~ ${
-        Math.floor(offset.time / 2) + 1
-      }:30`;
-    } else {
-      return `${offset.time / 2}:00 ~ ${offset.time / 2 + 1}:00`;
-    }
-  }, [offset]);
 
   return (
     <div className="overflow-x-hidden fixed top-0 right-0 left-0 z-50 w-full md:inset-0 h-modal md:h-full overflow-hidden">
@@ -35,7 +28,7 @@ const EventSlotModal = ({ colIdx, offset, onClose }: any) => {
         }}
       >
         <div className="text-[10px] pl-3 pt-[1px]">제목없음</div>
-        <div className="text-[10px] pl-3">{currentMarkedTimeInfo()}</div>
+        <div className="text-[10px] pl-3">{`${offset.startTime} ~ ${offset.endTime}`}</div>
       </div>
       <div
         style={{
@@ -50,13 +43,30 @@ const EventSlotModal = ({ colIdx, offset, onClose }: any) => {
         }}
         ref={ref}
       >
-        <FormModal />
+        <FormModal offset={offset} onClose={onClose} />
       </div>
     </div>
   );
 };
 
-const FormModal = () => {
+const FormModal = ({ offset, onClose }: any) => {
+  const { createEvent } = useCalendarActions();
+  const createEventSlot = () => {
+    createEvent({
+      key: offset.date,
+      data: {
+        id: nanoid(),
+        startTime: offset.startTime,
+        endTime: offset.endTime,
+        title: offset.startTime + '입니다',
+        description: '상세내역',
+        createdAt: new Date(),
+        updatedAt: new Date(),
+        type: 'event',
+      },
+    });
+    onClose();
+  };
   return (
     <div className="flex flex-col">
       <div className="h-[36px] bg-slate-300 px-[16px]"></div>
@@ -86,7 +96,7 @@ const FormModal = () => {
       </div>
       <div className="flex justify-end items-center h-[44px] gap-4 px-[16px]">
         <div>옵션 더보기</div>
-        <div>저장</div>
+        <div onClick={createEventSlot}>저장</div>
       </div>
     </div>
   );

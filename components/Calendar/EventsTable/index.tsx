@@ -29,15 +29,17 @@ const EventsTable = () => {
         <EventTimeBorder />
         <div className="flex-1 grid grid-cols-7">
           {weekDaysWithMarkedEventsData.map((date, idx) =>
-            Object.entries(date).map(([date, markedEvents]) => (
-              <React.Fragment key={date}>
-                <EventVerticalSlot
-                  colIdx={idx}
-                  date={date}
-                  markedEvents={markedEvents}
-                />
-              </React.Fragment>
-            )),
+            Object.entries(date).map(([date, markedEvents]) => {
+              return (
+                <React.Fragment key={date}>
+                  <EventVerticalSlot
+                    colIdx={idx}
+                    date={date}
+                    markedEvents={markedEvents}
+                  />
+                </React.Fragment>
+              );
+            }),
           )}
         </div>
       </div>
@@ -84,10 +86,7 @@ const EventsTable = () => {
           <div className="h-full">
             {[...Array(24).keys()].map((_, i) => (
               <div
-                className={
-                  `relative flex justify-center ml-[80px] h-[40px] border-b-[1px] border-red-300`
-                  // ?? window 사이즈에 따라 pr 값 변경
-                }
+                className={`relative flex justify-center ml-[80px] h-[40px] border-b-[1px] border-red-300`}
                 style={{ width: `${width - 340}px` }}
                 key={i}
               >
@@ -114,6 +113,8 @@ function EventVerticalSlot({ date, markedEvents, colIdx }: any) {
     y: '0',
     width: '0',
     time: 0,
+    startTime: '',
+    endTime: '',
     date: '',
   });
   const onOpenModal = () => {
@@ -123,10 +124,30 @@ function EventVerticalSlot({ date, markedEvents, colIdx }: any) {
     setIsShowModal(false);
   };
 
+  const getStartTimeAndEndTime = (time) => {
+    const onFixedFormat = (t: number) => {
+      return t < 10 ? '0' + t : t;
+    };
+    const fixedStartTime = onFixedFormat(Math.floor(time / 2));
+    const fixedEndTime = onFixedFormat(Math.floor(time / 2 + 1));
+
+    if (time % 2 === 1) {
+      return {
+        startTime: `${fixedStartTime}:30`,
+        endTime: `${fixedEndTime}:30`,
+      };
+    } else {
+      return {
+        startTime: `${fixedStartTime}:00`,
+        endTime: `${fixedEndTime}:00`,
+      };
+    }
+  };
   const selectedSlotFilterY = React.useCallback((coordinateY) => {
     const rangeY = [...Array(48).keys()].map((_, i) => ({
       y: '' + (i * 20 + stepY.current),
       time: i,
+      ...getStartTimeAndEndTime(i),
     }));
     let c = -1;
     while (true) {
@@ -156,6 +177,7 @@ function EventVerticalSlot({ date, markedEvents, colIdx }: any) {
 
   const onHandleEventSlot = onClickEventSlot(onOpenModal);
 
+  //! include time에 대해서 ui를 재설정 할 필요가 있음
   React.useEffect(() => {
     if (markedEvents.length > 0) {
       const markedElements = markedEvents.map((el) => {
@@ -168,7 +190,7 @@ function EventVerticalSlot({ date, markedEvents, colIdx }: any) {
         return (
           <div
             key={el.id}
-            className={`absolute bg-[#a2c2d8] w-full rounded-md`}
+            className={`absolute bg-[#a2c2d8] w-full rounded-md overflow-hidden`}
             style={{
               top: `${top}px`,
               height: `${height}px`,
@@ -184,6 +206,7 @@ function EventVerticalSlot({ date, markedEvents, colIdx }: any) {
       setMarkedEventsElement(markedElements);
     }
   }, [markedEvents]);
+
   return (
     <React.Fragment>
       <div className="relative border-r-[1px]">
