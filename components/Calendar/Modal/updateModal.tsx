@@ -21,7 +21,6 @@ const EventSlotModal = ({ colIdx, offset, onClose }: any) => {
           top: +offset.y - 150 + 'px',
           left: 348 + +offset.width + 15 + +offset.width * colIdx + 'px',
           width: '448px',
-          // height: '515px',
           zIndex: 10,
           background: 'white',
           border: '1px solid #888888',

@@ -74,7 +74,6 @@ const EventSlotModal = ({ colIdx, offset, onClose }: any) => {
 const FormModal = ({ offset, onClose }: any) => {
   const { startTime, setStartTime, endTime, setEndTime, title, setTitle } =
     useModal();
-  const [description, setDescription] = React.useState('');
   const { createEvent } = useCalendarActions();
   const createEventSlot = () => {
     createEvent({
