@@ -11,12 +11,18 @@ const EventSlotModal = ({ colIdx, offset, onClose }: any) => {
   const [slotHeight, setSlotHeight] = React.useState(40);
   const [top, setTop] = React.useState(offset.y);
   React.useEffect(() => {
-    const height = (+endTime.slice(0, 2) - +startTime.slice(0, 2)) * 40;
+    const minEnd = +endTime.slice(0, 2) * 60 + +endTime.slice(-2);
+    const minStart = +startTime.slice(0, 2) * 60 + +startTime.slice(-2);
+    const differTime = minEnd - minStart;
+    const height =
+      differTime % 60 == 0
+        ? Math.floor(differTime / 60) * 40
+        : Math.floor(differTime / 60) * 40 + 15;
     const top =
       +startTime.slice(-2) === 0
         ? +startTime.slice(0, 2) * 40
         : +startTime.slice(0, 2) * 40 + 20;
-    setSlotHeight(height);
+    setSlotHeight(height < 30 ? 40 : height);
     setTop(top + 148);
   }, [startTime, endTime]);
 
@@ -41,7 +47,9 @@ const EventSlotModal = ({ colIdx, offset, onClose }: any) => {
           boxShadow: '2px 4px #888888',
         }}
       >
-        <div className="text-[10px] pl-3 pt-[1px]">{title ?? '제목없음'}</div>
+        <div className="text-[10px] pl-3 pt-[1px]">
+          {title === '' ? '제목없음' : title}
+        </div>
         <div className="text-[10px] pl-3">{`${startTime} ~ ${endTime}`}</div>
       </div>
       <div
@@ -50,7 +58,6 @@ const EventSlotModal = ({ colIdx, offset, onClose }: any) => {
           top: +offset.y - 150 + 'px',
           left: 348 + +offset.width + 15 + +offset.width * colIdx + 'px',
           width: '448px',
-          // height: '515px',
           zIndex: 10,
           background: 'white',
           border: '1px solid #888888',
@@ -64,10 +71,9 @@ const EventSlotModal = ({ colIdx, offset, onClose }: any) => {
 };
 
 const FormModal = ({ offset, onClose }: any) => {
-  const { startTime, setStartTime, endTime, setEndTime } = useModal();
-  const [title, setTitle] = React.useState('');
+  const { startTime, setStartTime, endTime, setEndTime, title, setTitle } =
+    useModal();
   const [description, setDescription] = React.useState('');
-
   const { createEvent } = useCalendarActions();
   const createEventSlot = () => {
     createEvent({
@@ -93,6 +99,10 @@ const FormModal = ({ offset, onClose }: any) => {
     setEndTime(e.target.value);
   };
 
+  const onChangeTitle = (e) => {
+    setTitle(e.target.value);
+  };
+
   return (
     <div className="flex flex-col">
       <div className="h-[36px] bg-slate-300 px-[16px]"></div>
@@ -102,6 +112,7 @@ const FormModal = ({ offset, onClose }: any) => {
             <input
               className="h-[28px]  w-full text-[22px] border-b-2"
               placeholder="제목 및 시간 추가"
+              onChange={onChangeTitle}
             />
           </div>
         </div>

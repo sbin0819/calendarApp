@@ -187,7 +187,7 @@ function EventVerticalSlot({ date, markedEvents, colIdx }: any) {
   const onClickEventSlot2 =
     (openModalCb: () => void) =>
     (e: React.MouseEvent<HTMLDivElement, MouseEvent>) =>
-    (data) => {
+    (data: SlotType) => {
       e.stopPropagation();
       // current width 정보
       const width = e.currentTarget?.offsetWidth;
@@ -199,7 +199,7 @@ function EventVerticalSlot({ date, markedEvents, colIdx }: any) {
         width: `${width}`,
         date: date || '',
       }));
-      updateSelectedSlot({ selectedSlot: data });
+      updateSelectedSlot({ selectedSlot: { ...data } });
       setModalType('update');
       openModalCb();
     };

@@ -35,7 +35,7 @@ interface CalendarStore {
   selectedDay: MomentTypes;
   currYYYYMMDD: string;
   selectedWeek: string[]; //
-  selectedSlot?: string; // 0 ~ 48 단위 24 * 2
+  selectedSlot: SlotType | undefined; // 0 ~ 48 단위 24 * 2
   selectedWeekData: EventSlotType; // 활성화된 주의 데이터를 보여주어야함 7 이상의 key 값이 생길 수 없음
   allEventData: EventSlotType; // 서버가 없기 때문에 전체 데이터를 저장해주어야함
 }
@@ -86,7 +86,7 @@ export const calendarSlice = createSlice({
     updatedSelectedWeek: (state, { payload: { selectedWeek } }) => {
       state.selectedWeek = selectedWeek;
     },
-    updateSelectedSlot: (state, { payload: selectedSlot }) => {
+    updateSelectedSlot: (state, { payload: { selectedSlot } }) => {
       state.selectedSlot = selectedSlot;
     },
     createEvent: (state, { payload: { key, data } }) => {
