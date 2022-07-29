@@ -89,7 +89,7 @@ const EventsTable = () => {
           <div className="h-full">
             {[...Array(24).keys()].map((_, i) => (
               <div
-                className={`relative flex justify-center ml-[80px] h-[40px] border-b-[1px] border-red-300`}
+                className={`relative flex justify-center ml-[80px] h-[40px] border-b-[1px]`}
                 style={{ width: `${width - 340}px` }}
                 key={i}
               >
@@ -173,6 +173,7 @@ function EventVerticalSlot({ date, markedEvents, colIdx }: any) {
       // current width 정보
       const width = e.currentTarget?.offsetWidth;
       const date = e.currentTarget.getAttribute('data-datekey');
+      console.log(date);
       setOffset((prev) => ({
         ...prev,
         x: `${e.clientX}`,

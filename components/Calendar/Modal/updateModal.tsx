@@ -12,7 +12,6 @@ const EventSlotModal = ({ colIdx, offset, onClose }: any) => {
   useOnClickOutside(ref, () => {
     onClose();
   });
-
   return (
     <div className="overflow-x-hidden fixed top-0 right-0 left-0 z-50 w-full md:inset-0 h-modal md:h-full overflow-hidden">
       <div
@@ -35,22 +34,16 @@ const EventSlotModal = ({ colIdx, offset, onClose }: any) => {
 };
 
 const FormModal = ({ offset, onClose }: any) => {
-  const { selectedSlot } = useCalendar();
-  const { startTime, endTime, title, description } = selectedSlot as SlotType;
-  const { createEvent } = useCalendarActions();
+  const { selectedSlot, allEventData } = useCalendar();
+  const { startTime, endTime, title, description, id, date } =
+    selectedSlot as SlotType;
+  const { deleteEvent } = useCalendarActions();
   const deleteEventSlot = () => {
-    createEvent({
-      key: offset.date,
-      data: {
-        id: nanoid(),
-        startTime,
-        endTime,
-        title,
-        description: '상세내역',
-        createdAt: new Date(),
-        updatedAt: new Date(),
-        type: 'event',
-      },
+    console.log(date);
+    console.log(allEventData[date]);
+    deleteEvent({
+      key: date,
+      id,
     });
     onClose();
   };

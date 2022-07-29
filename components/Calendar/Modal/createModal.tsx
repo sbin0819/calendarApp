@@ -87,6 +87,7 @@ const FormModal = ({ offset, onClose }: any) => {
         createdAt: new Date(),
         updatedAt: new Date(),
         type: 'event',
+        date: offset.date,
       },
     });
     onClose();

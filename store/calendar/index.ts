@@ -26,6 +26,7 @@ export interface SlotType {
   createdAt?: string | Date;
   updatedAt?: string | Date; // updatedAt 최신 순에 따라 순서가 바뀜?
   order?: number;
+  date: string;
 }
 
 export interface EventSlotType {
@@ -57,6 +58,7 @@ const initialState: CalendarStore = {
         createdAt: new Date(),
         updatedAt: new Date(),
         type: 'event',
+        date: moment(today).format('YYYY-MM-DD'),
       },
 
       {
@@ -68,6 +70,7 @@ const initialState: CalendarStore = {
         createdAt: new Date(),
         updatedAt: new Date(),
         type: 'event',
+        date: moment(today).format('YYYY-MM-DD'),
       },
     ],
   },
@@ -95,6 +98,11 @@ export const calendarSlice = createSlice({
       } else {
         state.allEventData[key] = [data];
       }
+    },
+    deleteEvent: (state, { payload: { key, id } }) => {
+      state.allEventData[key] = state.allEventData[key].filter(
+        (data) => data.id !== id,
+      );
     },
     nextWeek: (state) => {
       // 다음주의 날짜들 중 같은 인덱스

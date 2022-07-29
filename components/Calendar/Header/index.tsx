@@ -29,7 +29,6 @@ const Header = () => {
   return (
     <div className="flex p-[8px] h-[64px] items-center px-10 gap-12">
       <div>캘린더</div>
-      <div className="cursor-pointer">오늘</div>
       <div className="flex gap-4">
         <GrPrevious
           className="cursor-pointer text-xl"
