@@ -1,7 +1,6 @@
 import React from 'react';
 import moment, { Moment as MomentTypes } from 'moment';
 import { GrNext, GrPrevious } from 'react-icons/gr';
-import useCalendar from '@store/calendar/useCalendar';
 import useCalendarActions from '@store/calendar/useCalendarActions';
 
 const Calendar = () => {
