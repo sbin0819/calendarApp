@@ -5,6 +5,7 @@ import useCalendar from '@store/calendar/useCalendar';
 import type { SlotType } from 'store/calendar';
 import useWindowSize from 'lib/useWindowSize';
 import useCalendarActions from '@store/calendar/useCalendarActions';
+import ModalProvider from '../Modal/ModalProvider';
 
 const EventsTable = () => {
   const { selectedWeek, allEventData } = useCalendar();
@@ -120,6 +121,7 @@ function EventVerticalSlot({ date, markedEvents, colIdx }: any) {
     startTime: '',
     endTime: '',
     date: '',
+    min: 0,
   });
   const onOpenModal = () => {
     setIsShowModal(true);
@@ -134,16 +136,18 @@ function EventVerticalSlot({ date, markedEvents, colIdx }: any) {
     };
     const fixedStartTime = onFixedFormat(Math.floor(time / 2));
     const fixedEndTime = onFixedFormat(Math.floor(time / 2 + 1));
-
+    const min = time * 30;
     if (time % 2 === 1) {
       return {
         startTime: `${fixedStartTime}:30`,
         endTime: `${fixedEndTime}:30`,
+        min,
       };
     } else {
       return {
         startTime: `${fixedStartTime}:00`,
         endTime: `${fixedEndTime}:00`,
+        min,
       };
     }
   };
@@ -243,7 +247,13 @@ function EventVerticalSlot({ date, markedEvents, colIdx }: any) {
           onClick={onHandleCreateEventSlot}
         />
         {isShowModal && modalType === 'default' ? (
-          <CreateModal colIdx={colIdx} offset={offset} onClose={onCloseModal} />
+          <ModalProvider offset={offset}>
+            <CreateModal
+              colIdx={colIdx}
+              offset={offset}
+              onClose={onCloseModal}
+            />
+          </ModalProvider>
         ) : (
           isShowModal &&
           modalType === 'update' && (
