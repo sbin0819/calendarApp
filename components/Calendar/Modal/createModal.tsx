@@ -2,8 +2,9 @@ import React from 'react';
 import useOnClickOutside from 'lib/useOnClickOutside';
 import useCalendarActions from '@store/calendar/useCalendarActions';
 import { nanoid } from '@reduxjs/toolkit';
-import { timeOptions } from '../utils';
-import ModalProvider, { useModal } from './ModalProvider';
+import { getDay, timeOptions } from '../utils';
+import { useModal } from './ModalProvider';
+import moment from 'moment';
 // 금토일은 왼쪽
 //
 const EventSlotModal = ({ colIdx, offset, onClose }: any) => {
@@ -123,9 +124,12 @@ const FormModal = ({ offset, onClose }: any) => {
           <div>알림</div>
         </div>
         <div className="flex h-[36px] items-center">
-          <div className="w-[44px] p-[8px] bg-[pink] text-center">i</div>
+          <div className="w-[44px] p-[8px] bg-rose-50 text-center">i</div>
           <div className="flex gap-2">
-            <div>7월 18일 (월요일)</div>
+            <div>
+              {moment(offset.date).format('M월 D일')}{' '}
+              {getDay('' + moment(offset.date).day())}
+            </div>
             <div>
               <select value={startTime} onChange={onChangeStartTime}>
                 {timeOptions.map((data) => (
@@ -149,7 +153,7 @@ const FormModal = ({ offset, onClose }: any) => {
           </div>
         </div>
       </div>
-      <div className="flex justify-end items-center h-[44px] gap-4 px-[16px]">
+      <div className="flex justify-end items-center h-[44px] gap-4 px-[16px] pb-10 pt-20">
         <div>옵션 더보기</div>
         <div
           className="cursor-pointer bg-sky-500 text-white px-4 py-2"

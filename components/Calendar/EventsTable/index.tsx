@@ -6,6 +6,7 @@ import type { SlotType } from 'store/calendar';
 import useWindowSize from 'lib/useWindowSize';
 import useCalendarActions from '@store/calendar/useCalendarActions';
 import ModalProvider from '../Modal/ModalProvider';
+import { getDay } from '../utils';
 
 const EventsTable = () => {
   const { selectedWeek, allEventData } = useCalendar();
@@ -51,18 +52,7 @@ const EventsTable = () => {
 
   function EventWeekHeader() {
     const { selectedWeek } = useCalendar();
-    const getDay = (key: string) => {
-      const dayObj = {
-        '1': '월',
-        '2': '화',
-        '3': '수',
-        '4': '목',
-        '5': '금',
-        '6': '토',
-        '0': '일',
-      };
-      return dayObj[key];
-    };
+
     return (
       <div className="flex" role="presentation">
         <div className="flex w-[92px] items-end">GMT+09</div>

@@ -2,9 +2,10 @@ import React from 'react';
 import useOnClickOutside from 'lib/useOnClickOutside';
 import useCalendarActions from '@store/calendar/useCalendarActions';
 import { nanoid } from '@reduxjs/toolkit';
-import { timeOptions } from '../utils';
+import { getDay, timeOptions } from '../utils';
 import useCalendar from '@store/calendar/useCalendar';
 import { SlotType } from '@store/calendar';
+import moment from 'moment';
 // 금토일은 왼쪽
 //
 const EventSlotModal = ({ colIdx, offset, onClose }: any) => {
@@ -27,20 +28,18 @@ const EventSlotModal = ({ colIdx, offset, onClose }: any) => {
         }}
         ref={ref}
       >
-        <FormModal offset={offset} onClose={onClose} />
+        <FormModal onClose={onClose} />
       </div>
     </div>
   );
 };
 
-const FormModal = ({ offset, onClose }: any) => {
+const FormModal = ({ onClose }: any) => {
   const { selectedSlot, allEventData } = useCalendar();
   const { startTime, endTime, title, description, id, date } =
     selectedSlot as SlotType;
   const { deleteEvent } = useCalendarActions();
   const deleteEventSlot = () => {
-    console.log(date);
-    console.log(allEventData[date]);
     deleteEvent({
       key: date,
       id,
@@ -68,6 +67,7 @@ const FormModal = ({ offset, onClose }: any) => {
             <input
               className="h-[28px]  w-full text-[22px] border-b-2"
               placeholder="제목 및 시간 추가"
+              value={title}
               onChange={onChangeTitle}
             />
           </div>
@@ -78,9 +78,11 @@ const FormModal = ({ offset, onClose }: any) => {
           <div>알림</div>
         </div>
         <div className="flex h-[36px] items-center">
-          <div className="w-[44px] p-[8px] bg-[pink] text-center">i</div>
+          <div className="w-[44px] p-[8px] bg-rose-50 text-center">i</div>
           <div className="flex gap-2">
-            <div>7월 18일 (월요일)</div>
+            <div>
+              {moment(date).format('M월 D일')} {getDay('' + moment(date).day())}
+            </div>
             <div>
               <select value={startTime} onChange={onChangeStartTime}>
                 {timeOptions.map((data) => (
@@ -104,7 +106,7 @@ const FormModal = ({ offset, onClose }: any) => {
           </div>
         </div>
       </div>
-      <div className="flex justify-end items-center h-[44px] gap-4 px-[16px]">
+      <div className="flex justify-end items-center h-[44px] gap-4 px-[16px] pb-10 pt-20">
         <div
           className="cursor-pointer bg-red-400 text-white px-4 py-2"
           onClick={deleteEventSlot}
@@ -112,7 +114,7 @@ const FormModal = ({ offset, onClose }: any) => {
           삭제
         </div>
         <div
-          className="cursor-pointer bg-sky-500 text-white px-4 py-2"
+          className="cursor-pointer bg-sky-500 text-white px-4 py-2 "
           onClick={() => alert('미구현')}
         >
           수정

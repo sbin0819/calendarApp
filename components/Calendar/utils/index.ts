@@ -20,3 +20,16 @@ export const timeOptions = [...Array(96).keys()].map((el) => {
     };
   }
 });
+
+export const getDay = (key: string) => {
+  const dayObj = {
+    '1': '월',
+    '2': '화',
+    '3': '수',
+    '4': '목',
+    '5': '금',
+    '6': '토',
+    '0': '일',
+  };
+  return dayObj[key];
+};
