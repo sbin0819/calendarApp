@@ -26,6 +26,7 @@ export interface SlotType {
   createdAt?: string | Date;
   updatedAt?: string | Date; // updatedAt 최신 순에 따라 순서가 바뀜?
   order?: number;
+  date: string;
 }
 
 export interface EventSlotType {
@@ -35,7 +36,7 @@ interface CalendarStore {
   selectedDay: MomentTypes;
   currYYYYMMDD: string;
   selectedWeek: string[]; //
-  selectedSlot?: string; // 0 ~ 48 단위 24 * 2
+  selectedSlot: SlotType | undefined; // 0 ~ 48 단위 24 * 2
   selectedWeekData: EventSlotType; // 활성화된 주의 데이터를 보여주어야함 7 이상의 key 값이 생길 수 없음
   allEventData: EventSlotType; // 서버가 없기 때문에 전체 데이터를 저장해주어야함
 }
@@ -57,6 +58,7 @@ const initialState: CalendarStore = {
         createdAt: new Date(),
         updatedAt: new Date(),
         type: 'event',
+        date: moment(today).format('YYYY-MM-DD'),
       },
 
       {
@@ -68,6 +70,7 @@ const initialState: CalendarStore = {
         createdAt: new Date(),
         updatedAt: new Date(),
         type: 'event',
+        date: moment(today).format('YYYY-MM-DD'),
       },
     ],
   },
@@ -86,7 +89,7 @@ export const calendarSlice = createSlice({
     updatedSelectedWeek: (state, { payload: { selectedWeek } }) => {
       state.selectedWeek = selectedWeek;
     },
-    updateSelectedSlot: (state, { payload: selectedSlot }) => {
+    updateSelectedSlot: (state, { payload: { selectedSlot } }) => {
       state.selectedSlot = selectedSlot;
     },
     createEvent: (state, { payload: { key, data } }) => {
@@ -95,6 +98,11 @@ export const calendarSlice = createSlice({
       } else {
         state.allEventData[key] = [data];
       }
+    },
+    deleteEvent: (state, { payload: { key, id } }) => {
+      state.allEventData[key] = state.allEventData[key].filter(
+        (data) => data.id !== id,
+      );
     },
     nextWeek: (state) => {
       // 다음주의 날짜들 중 같은 인덱스

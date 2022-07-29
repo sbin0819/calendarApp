@@ -5,6 +5,8 @@ import useCalendar from '@store/calendar/useCalendar';
 import type { SlotType } from 'store/calendar';
 import useWindowSize from 'lib/useWindowSize';
 import useCalendarActions from '@store/calendar/useCalendarActions';
+import ModalProvider from '../Modal/ModalProvider';
+import { getDay } from '../utils';
 
 const EventsTable = () => {
   const { selectedWeek, allEventData } = useCalendar();
@@ -50,18 +52,7 @@ const EventsTable = () => {
 
   function EventWeekHeader() {
     const { selectedWeek } = useCalendar();
-    const getDay = (key: string) => {
-      const dayObj = {
-        '1': '월',
-        '2': '화',
-        '3': '수',
-        '4': '목',
-        '5': '금',
-        '6': '토',
-        '0': '일',
-      };
-      return dayObj[key];
-    };
+
     return (
       <div className="flex" role="presentation">
         <div className="flex w-[92px] items-end">GMT+09</div>
@@ -88,7 +79,7 @@ const EventsTable = () => {
           <div className="h-full">
             {[...Array(24).keys()].map((_, i) => (
               <div
-                className={`relative flex justify-center ml-[80px] h-[40px] border-b-[1px] border-red-300`}
+                className={`relative flex justify-center ml-[80px] h-[40px] border-b-[1px]`}
                 style={{ width: `${width - 340}px` }}
                 key={i}
               >
@@ -120,6 +111,7 @@ function EventVerticalSlot({ date, markedEvents, colIdx }: any) {
     startTime: '',
     endTime: '',
     date: '',
+    min: 0,
   });
   const onOpenModal = () => {
     setIsShowModal(true);
@@ -134,16 +126,18 @@ function EventVerticalSlot({ date, markedEvents, colIdx }: any) {
     };
     const fixedStartTime = onFixedFormat(Math.floor(time / 2));
     const fixedEndTime = onFixedFormat(Math.floor(time / 2 + 1));
-
+    const min = time * 30;
     if (time % 2 === 1) {
       return {
         startTime: `${fixedStartTime}:30`,
         endTime: `${fixedEndTime}:30`,
+        min,
       };
     } else {
       return {
         startTime: `${fixedStartTime}:00`,
         endTime: `${fixedEndTime}:00`,
+        min,
       };
     }
   };
@@ -169,6 +163,7 @@ function EventVerticalSlot({ date, markedEvents, colIdx }: any) {
       // current width 정보
       const width = e.currentTarget?.offsetWidth;
       const date = e.currentTarget.getAttribute('data-datekey');
+      console.log(date);
       setOffset((prev) => ({
         ...prev,
         x: `${e.clientX}`,
@@ -183,7 +178,7 @@ function EventVerticalSlot({ date, markedEvents, colIdx }: any) {
   const onClickEventSlot2 =
     (openModalCb: () => void) =>
     (e: React.MouseEvent<HTMLDivElement, MouseEvent>) =>
-    (data) => {
+    (data: SlotType) => {
       e.stopPropagation();
       // current width 정보
       const width = e.currentTarget?.offsetWidth;
@@ -195,7 +190,7 @@ function EventVerticalSlot({ date, markedEvents, colIdx }: any) {
         width: `${width}`,
         date: date || '',
       }));
-      updateSelectedSlot({ selectedSlot: data });
+      updateSelectedSlot({ selectedSlot: { ...data } });
       setModalType('update');
       openModalCb();
     };
@@ -243,7 +238,13 @@ function EventVerticalSlot({ date, markedEvents, colIdx }: any) {
           onClick={onHandleCreateEventSlot}
         />
         {isShowModal && modalType === 'default' ? (
-          <CreateModal colIdx={colIdx} offset={offset} onClose={onCloseModal} />
+          <ModalProvider offset={offset}>
+            <CreateModal
+              colIdx={colIdx}
+              offset={offset}
+              onClose={onCloseModal}
+            />
+          </ModalProvider>
         ) : (
           isShowModal &&
           modalType === 'update' && (
